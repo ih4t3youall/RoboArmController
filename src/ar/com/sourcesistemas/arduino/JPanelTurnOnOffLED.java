@@ -17,13 +17,26 @@ import javax.swing.JPanel;
 public class JPanelTurnOnOffLED extends JPanel
 	implements ActionListener {
 
-	private static final String ON = "On";
-	private static final String OFF = "Off";
-	private static final String TURN_ON = "1";
-	private static final String TURN_OFF = "0";
+	private static final String IZQUIERDA = "Izquierda";
+	private static final String DERECHA = "Derecha";
+	private static final int PULSO_IZQUIERDA = 2;
+	private static final int PULSO_DERECHA = 1;
+	
+	private static final String ARRIBA ="CAMA ARRIBA";
+	private static final String ABAJO ="CAMA ABAJO";
+	private static final int PULSO_ARRIBA = 3;
+	private static final int PULSO_ABAJO = 4;
+	
+	private static final String ENCENDER_LED = "Encender led";
+	private static final int PULSO_LED =9;
 
+	
+	private JButton encenderLed;
 	private JButton switchOnButton;
 	private JButton switchOffButton;
+	private JButton buttonArriba;
+	private JButton buttonAbajo;
+	
 	private JLabel label;
 	private JFrame frame;
 
@@ -38,19 +51,28 @@ public class JPanelTurnOnOffLED extends JPanel
 	private static final int DATA_RATE = 9600;
 
 	public JPanelTurnOnOffLED(){
-		switchOnButton = new JButton(ON);
+		encenderLed = new JButton(ENCENDER_LED);
+		
+		switchOnButton = new JButton(IZQUIERDA);
+		switchOffButton = new JButton(DERECHA);
 
-		switchOffButton = new JButton(OFF);
-		switchOffButton.setEnabled(false);
+		buttonArriba = new JButton(ARRIBA);
+		buttonAbajo = new JButton(ABAJO);
 
 		label = new JLabel("Turn On/Off LED:");
 
 		switchOnButton.addActionListener(this);
 		switchOffButton.addActionListener(this);
+		buttonAbajo.addActionListener(this);
+		buttonArriba.addActionListener(this);
+		encenderLed.addActionListener(this);
 
 		add(label);
 		add(switchOnButton);
 		add(switchOffButton);
+		add(buttonAbajo);
+		add(buttonArriba);
+		add(encenderLed);
 
 		initializeArduinoConnection();
 	}
@@ -129,16 +151,50 @@ public class JPanelTurnOnOffLED extends JPanel
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(ON.equals(e.getActionCommand())){
-			switchOnButton.setEnabled(false);
-			switchOffButton.setEnabled(true);
-			sendData(TURN_ON);
-
-		}else{
-			switchOnButton.setEnabled(true);
-			switchOffButton.setEnabled(false);
-			sendData(TURN_OFF);
+		
+		switch (e.getActionCommand()){
+		
+		case  "Izquierda":{
+			
+//			switchOnButton.setEnabled(false);
+//			switchOffButton.setEnabled(true);
+			sendData(String.valueOf(PULSO_IZQUIERDA));
+			break;
 		}
+		
+		case "Derecha":{
+			sendData(String.valueOf(PULSO_DERECHA));
+			break;
+		}
+		
+		case ARRIBA:{
+			sendData(String.valueOf(PULSO_ARRIBA));
+			break;
+			
+		}
+		case ABAJO:{
+			sendData(String.valueOf(PULSO_ABAJO));
+			break;
+			
+		}
+		
+		case ENCENDER_LED:{
+			sendData(String.valueOf(PULSO_LED));
+			break;
+			
+		}
+		
+		
+		}
+		
+//		if(PULSO_IZQUIERDA.equals(e.getActionCommand())){
+//			
+//
+//		}else{
+//			switchOnButton.setEnabled(true);
+//			switchOffButton.setEnabled(false);
+//			sendData(PULSO_DERECHA);
+//		}
 
 	}
 
