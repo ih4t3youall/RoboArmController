@@ -1,18 +1,21 @@
 package ar.com.sourcesistemas.arduino;
+import java.awt.GridLayout;
+import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Enumeration;
 
-import gnu.io.CommPortIdentifier;
-import gnu.io.SerialPort;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.plaf.basic.BasicOptionPaneUI.ButtonActionListener;
+
+import gnu.io.CommPortIdentifier;
+import gnu.io.SerialPort;
 
 public class JPanelTurnOnOffLED extends JPanel
 	implements ActionListener {
@@ -27,15 +30,54 @@ public class JPanelTurnOnOffLED extends JPanel
 	private static final int PULSO_ARRIBA = 3;
 	private static final int PULSO_ABAJO = 4;
 	
+	private static final String PINZA_ABRIR ="Abrir pinza";
+	private static final String PINZA_CERRAR ="cerrar pinza";
+	private static final int PULSO_CERRAR =7;
+	private static final int PULSO_ABRIR = 8;
+	
+	private static final String MUNIECA_ARRIBA="munieca arriba";
+	private static final String MUNIECA_ABAJO="munieca abajo";
+	private static final int PULSO_MUNIECA_ARRIBA = 6;
+	private static final int PULSO_MUNIECA_ABAJO = 5;
+	
+	private static final String ADELANTE = "Adelante";
+	private static final String ATRAS ="Atras";
+	private static final String PULSO_ADELANTE="w";
+	private static final String PULSO_ATRAS="s";
+	
+	
+	
 	private static final String ENCENDER_LED = "Encender led";
 	private static final int PULSO_LED =9;
+	
+	private static final String PRECISION_MAS ="Precicion mas";
+	private static final String PRECISION_MENOS ="Precicion menos";
+	private static final String PULSO_PRECISION_MAS="z";
+	private static final String PULSO_PRECISION_MENOS="x";
+	
+	private JLabel labelPrecision;
 
 	
 	private JButton encenderLed;
-	private JButton switchOnButton;
-	private JButton switchOffButton;
+	private JButton buttonIzquierda;
+	private JButton buttonDerecha;
 	private JButton buttonArriba;
 	private JButton buttonAbajo;
+	
+	private JButton abrirPinza;
+	private JButton cerrarPinza;
+	private JButton muniecaArriba;
+	private JButton muniecaAbajo;
+	
+	private JButton precisionMas;
+	private JButton precisionMenos;
+	
+	private JButton moverAdelante;
+	private JButton moverAtras;
+	
+	
+	
+	
 	
 	private JLabel label;
 	private JFrame frame;
@@ -51,29 +93,85 @@ public class JPanelTurnOnOffLED extends JPanel
 	private static final int DATA_RATE = 9600;
 
 	public JPanelTurnOnOffLED(){
+		
+		
+		GridLayout gridLayout = new GridLayout(0,3);
+		
+		labelPrecision =new JLabel("1000");
+		
 		encenderLed = new JButton(ENCENDER_LED);
 		
-		switchOnButton = new JButton(IZQUIERDA);
-		switchOffButton = new JButton(DERECHA);
+		buttonIzquierda = new JButton(IZQUIERDA);
+		buttonDerecha = new JButton(DERECHA);
 
 		buttonArriba = new JButton(ARRIBA);
 		buttonAbajo = new JButton(ABAJO);
+		
+		abrirPinza = new JButton(PINZA_ABRIR);
+		cerrarPinza =new JButton(PINZA_CERRAR);
+		
+		muniecaAbajo =  new JButton(MUNIECA_ABAJO);
+		muniecaArriba = new JButton(MUNIECA_ARRIBA);
+		
+		moverAdelante = new JButton(ADELANTE);
+		moverAtras = new JButton(ATRAS);
+		
+		precisionMas = new JButton(PRECISION_MAS);
+		precisionMenos = new JButton(PRECISION_MENOS);
+		
 
 		label = new JLabel("Turn On/Off LED:");
 
-		switchOnButton.addActionListener(this);
-		switchOffButton.addActionListener(this);
+		buttonDerecha.addActionListener(this);
+		buttonIzquierda.addActionListener(this);
 		buttonAbajo.addActionListener(this);
 		buttonArriba.addActionListener(this);
 		encenderLed.addActionListener(this);
+		abrirPinza.addActionListener(this);
+		cerrarPinza.addActionListener(this);
+		muniecaAbajo.addActionListener(this);
+		muniecaArriba.addActionListener(this);
+		precisionMas.addActionListener(this);
+		precisionMenos.addActionListener(this);
+		moverAdelante.addActionListener(this);
+		moverAtras.addActionListener(this);
 
+		setLayout(gridLayout);
 		add(label);
-		add(switchOnButton);
-		add(switchOffButton);
-		add(buttonAbajo);
+		add(new Label(""));
+		add(new Label(""));
+		
 		add(buttonArriba);
+		add(muniecaArriba);
+		add(moverAdelante);
+		
+		add(buttonAbajo);
+		add(muniecaAbajo);
+		add(moverAtras);
+		
+		add(abrirPinza);
+		add(new JLabel(""));
+		add(cerrarPinza);
+		
+		add(buttonIzquierda);
+		add(new JLabel(""));
+		add(buttonDerecha);
+		
+		add(new JLabel(""));
 		add(encenderLed);
-
+		add(new JLabel(""));
+		
+		add(new JLabel(""));
+		add(new JLabel(""));
+		add(new JLabel(""));
+		
+		
+		add(precisionMas);
+		add(labelPrecision);
+		add(precisionMenos);
+	
+		
+		setVisible(true);
 		initializeArduinoConnection();
 	}
 
@@ -156,8 +254,6 @@ public class JPanelTurnOnOffLED extends JPanel
 		
 		case  "Izquierda":{
 			
-//			switchOnButton.setEnabled(false);
-//			switchOffButton.setEnabled(true);
 			sendData(String.valueOf(PULSO_IZQUIERDA));
 			break;
 		}
@@ -178,8 +274,63 @@ public class JPanelTurnOnOffLED extends JPanel
 			
 		}
 		
+		case PINZA_ABRIR:{
+			sendData(String.valueOf(PULSO_ABRIR));
+			break;
+			
+			
+		}
+		
+		case PINZA_CERRAR:{
+			
+			sendData(String.valueOf(PULSO_CERRAR));
+			break;
+			
+		}
+		
+		case MUNIECA_ABAJO:{
+			
+			sendData(String.valueOf(PULSO_MUNIECA_ABAJO));
+			break;
+			
+		}
+		
+		case MUNIECA_ARRIBA:{
+			sendData(String.valueOf(PULSO_MUNIECA_ARRIBA));
+			break;
+			
+		}
+		
 		case ENCENDER_LED:{
 			sendData(String.valueOf(PULSO_LED));
+			break;
+			
+		}
+		
+		case PRECISION_MAS:{
+			sendData(PULSO_PRECISION_MAS);
+			labelPrecision.setText(String.valueOf(Integer.parseInt(labelPrecision.getText())-50));
+			break;
+			
+		}
+		
+		case PRECISION_MENOS:{
+			sendData(PULSO_PRECISION_MENOS);
+			labelPrecision.setText(String.valueOf(Integer.parseInt(labelPrecision.getText())+50));
+			break;
+			
+		}
+		
+		case ADELANTE:{
+			
+			sendData(PULSO_ADELANTE);
+			break;
+			
+		}
+		
+		case ATRAS:{
+			
+			sendData(PULSO_ATRAS);
 			break;
 			
 		}
@@ -187,14 +338,6 @@ public class JPanelTurnOnOffLED extends JPanel
 		
 		}
 		
-//		if(PULSO_IZQUIERDA.equals(e.getActionCommand())){
-//			
-//
-//		}else{
-//			switchOnButton.setEnabled(true);
-//			switchOffButton.setEnabled(false);
-//			sendData(PULSO_DERECHA);
-//		}
 
 	}
 
