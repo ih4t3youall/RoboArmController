@@ -57,6 +57,8 @@ public class Botonera extends JPanel implements ActionListener {
 	public  Botonera() {
 
 		conn = new Conexion();
+		
+		new Server(conn);
 
 		GridLayout gridLayout = new GridLayout(0, 3);
 		this.setLayout(new GridLayout(0,3));
