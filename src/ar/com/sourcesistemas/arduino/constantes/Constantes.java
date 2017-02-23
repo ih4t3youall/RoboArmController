@@ -1,3 +1,4 @@
+
 package ar.com.sourcesistemas.arduino.constantes;
 
 public final class Constantes {
