@@ -36,13 +36,15 @@ public class Server implements MessageListener {
     private Conexion conn;
  
     static {
-        messageBrokerUrl = "tcp://localhost:61616";
+        messageBrokerUrl = "tcp://93.188.167.193:61616";
         messageQueueName = "brazo_robot";
         ackMode = Session.AUTO_ACKNOWLEDGE;
     }
  
     public Server(Conexion conn) {
         try {
+        	
+        	this.conn = conn;
             //This message broker is embedded
             BrokerService broker = new BrokerService();
             broker.setPersistent(false);
@@ -101,8 +103,13 @@ public class Server implements MessageListener {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				if(readValue.getCommand() != null){
                 conn.codeSender(readValue.getCommand());
                 System.out.println("comando enviado a arduino con exito");
+				}else{
+					System.out.println("recibi un null");
+					
+				}
             }
  
          
